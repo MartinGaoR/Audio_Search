@@ -1,8 +1,8 @@
 package Search;
 
-import Feature.MagnitudeSpectrum;
+import Feature.*;
 import SignalProcess.WaveIO;
-import Distance.Cosine;
+import Distance.*;
 import Tool.SortHashMapByValue;
 
 import java.io.BufferedReader;
@@ -18,7 +18,7 @@ public class SearchDemo {
     /**
      * Please replace the 'trainPath' with the specific path of train set in your PC.
      */
-    protected final static String trainPath = "D:/Developer/Java/AudioData/Environment_Sound/Environment Sound/";
+    protected final static String trainPath = "E:/study/study2015sem1/CS2108/Assignment 2/data/input/";
 
 
     /***
@@ -31,11 +31,16 @@ public class SearchDemo {
         File trainFolder = new File(trainPath);
         File[] trainList = trainFolder.listFiles();
 
-        HashMap<String, double[]> featureList = new HashMap<>();
+        HashMap<String, double[]> MSfeatureList = new HashMap<>();
+        HashMap<String, double[]> ENfeatureList = new HashMap<>();
+        HashMap<String, double[]> ZCfeatureList = new HashMap<>();
+        HashMap<String, double[]> MFfeatureList = new HashMap<>();
         try {
 
-            FileWriter fw = new FileWriter("data/feature/allFeature.txt");
-
+            FileWriter fw1 = new FileWriter("data/feature/allFeatureMS.txt");
+            FileWriter fw2 = new FileWriter("data/feature/allFeatureEN.txt");
+            FileWriter fw3 = new FileWriter("data/feature/allFeatureZC.txt");
+            FileWriter fw4 = new FileWriter("data/feature/allFeatureMF.txt");
             for (int i = 0; i < trainList.length; i++) {
                 WaveIO waveIO = new WaveIO();
                 short[] signal = waveIO.readWave(trainList[i].getAbsolutePath());
@@ -45,22 +50,48 @@ public class SearchDemo {
                  */
                 MagnitudeSpectrum ms = new MagnitudeSpectrum();
                 double[] msFeature = ms.getFeature(signal);
-
+                
+                Energy en = new Energy();
+                FFTProcess fft = new FFTProcess();
+                MFCC mf = new MFCC();
+                ZeroCrossing zc = new ZeroCrossing();
+                double[] enFeature = en.getFeature(signal);
+                mf.process(signal);
+                double[] mfMean = mf.getMeanFeature();
+                double[] zcFeature = zc.getFeature(signal);
                 /**
                  * Write the extracted feature into offline file;
                  */
-                featureList.put(trainList[i].getName(), msFeature);
-
-                String line = trainList[i].getName() + "\t";
+                MSfeatureList.put(trainList[i].getName(), msFeature);
+                ENfeatureList.put(trainList[i].getName(), enFeature);
+                ZCfeatureList.put(trainList[i].getName(), zcFeature);
+                MFfeatureList.put(trainList[i].getName(), mfMean);
+                String line1 = trainList[i].getName() + "\t";
+                String line2 = trainList[i].getName() + "\t";
+                String line3 = trainList[i].getName() + "\t";
+                String line4 = trainList[i].getName() + "\t";
                 for (double f: msFeature){
-                    line += f + "\t";
+                    line1 += f + "\t";
                 }
-
-                fw.append(line+"\n");
-
+                for (double f: enFeature){
+                    line2 += f + "\t";
+                }
+                for (double f: zcFeature){
+                    line3 += f + "\t";
+                }
+                for (double f: mfMean){
+                    line4 += f + "\t";
+                }
+                fw1.append(line1+"\n");
+                fw2.append(line2+"\n");
+                fw3.append(line3+"\n");
+                fw4.append(line4+"\n");
                 System.out.println("@=========@" + i);
             }
-            fw.close();
+            fw1.close();
+            fw2.close();
+            fw3.close();
+            fw4.close();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -72,7 +103,7 @@ public class SearchDemo {
         }
 
 
-        return featureList;
+        return MSfeatureList;
     }
 
     /***
@@ -82,27 +113,71 @@ public class SearchDemo {
      * @param query the selected query audio file;
      * @return the top 20 similar audio files;
      */
+    
+    
+    
+    // need 4 more coefficient and 1 index 
     public ArrayList<String> resultList(String query){
-        WaveIO waveIO = new WaveIO();
-
+        //HERE IS THE DISTANCE INDEX
+    	int index = 0;
+    	
+    	WaveIO waveIO = new WaveIO();
+        
         short[] inputSignal = waveIO.readWave(query);
         MagnitudeSpectrum ms = new MagnitudeSpectrum();
-        double[] msFeature1 = ms.getFeature(inputSignal);
+        Energy en = new Energy();
+        FFTProcess fft = new FFTProcess();
+        MFCC mf = new MFCC();
+        ZeroCrossing zc = new ZeroCrossing();
+        double[] msFeature = ms.getFeature(inputSignal);
+        double[] enFeature = en.getFeature(inputSignal);
+        mf.process(inputSignal);
+        double[] mfMean = mf.getMeanFeature();
+        double[] zcFeature = zc.getFeature(inputSignal);
+        //System.out.println(msFeature.length);
+        //System.out.println(mfMean.length);
         HashMap<String, Double> simList = new HashMap<String, Double>();
 
         /**
          * Example of calculating the distance via Cosine Similarity, modify it by yourself please.
          */
         Cosine cosine = new Cosine();
-
+        CityBlock cb = new CityBlock();
+        Euclidean eu = new Euclidean();
         /**
          * Load the offline file of features (the result of function 'trainFeatureList()'), modify it by yourself please;
          */
-        HashMap<String, double[]> trainFeatureList = readFeature("data/feature/allFeature.txt");
-
+        HashMap<String, double[]> trainFeatureListMS = readFeature("data/feature/allFeatureMS.txt");
+        HashMap<String, double[]> trainFeatureListEN = readFeature("data/feature/allFeatureEN.txt");
+        HashMap<String, double[]> trainFeatureListZC = readFeature("data/feature/allFeatureZC.txt");
+        HashMap<String, double[]> trainFeatureListMF = readFeature("data/feature/allFeatureMF.txt");
 //        System.out.println(trainFeatureList.size() + "=====");
-        for (Map.Entry f: trainFeatureList.entrySet()){
-            simList.put((String)f.getKey(), cosine.getDistance(msFeature1, (double[]) f.getValue()));
+        for (Map.Entry f: trainFeatureListMF.entrySet()){
+        	
+        	
+        	
+        	
+        	cosine.getDistance(mfMean, (double[]) f.getValue());
+        	//HERE YOU NEED TO ADD THE COEFFICIENTS CALCULATIONS
+        	switch(index)
+        	{
+        		case 0://COSINE
+        		{
+        			simList.put((String)f.getKey(),cosine.getDistance(msFeature, (double[]) f.getValue()));
+        			break;
+        		}
+        		case 1://CITY BLOCK
+        		{
+        			simList.put((String)f.getKey(),cb.getDistance(msFeature, (double[]) f.getValue()));
+        			break;
+        		}
+        		case 2://EUCLIDEAN
+        		{
+        			simList.put((String)f.getKey(),eu.getDistance(msFeature, (double[]) f.getValue()));
+        			break;
+        		}
+        	}
+            simList.put((String)f.getKey(), cosine.getDistance(msFeature, (double[]) f.getValue()));
         }
 
         SortHashMapByValue sortHM = new SortHashMapByValue(20);

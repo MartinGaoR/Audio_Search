@@ -16,7 +16,9 @@ public class SoundEffectDemo extends JFrame implements ActionListener{
     JPanel contentPane;
     JButton openButton, searchButton, queryButton;
     JFileChooser fileChooser;
-
+    JCheckBox check[] = new JCheckBox[4];
+    JTextField box[] = new JTextField[4];
+    JCheckBox distance[] = new JCheckBox[3];
     File queryAudio = null;
     int resultSize = 20;
     /**
