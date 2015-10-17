@@ -111,7 +111,7 @@ public class SoundEffectDemo extends JFrame implements ActionListener{
         
         //distance panel
         JPanel distancePanel = new JPanel();
-        distancePanel.setBounds(5, 65, 800, 30);
+        distancePanel.setBounds(30, 60, 800, 30);
         distancePanel.setLayout(new BoxLayout(distancePanel, BoxLayout.X_AXIS));
         distance[0] = new JCheckBox("Cosine Distance");
         distancePanel.add(distance[0]);
@@ -122,7 +122,7 @@ public class SoundEffectDemo extends JFrame implements ActionListener{
         
         //result panel - for results
         JPanel resultPanel = new JPanel();
-        resultPanel.setLayout(new GridLayout(0, 4, 60, 60));
+        resultPanel.setLayout(new GridLayout(0, 4, 20, 20));
 
         for (int i = 0; i < resultLabels.length; i ++){
             resultLabels[i] = new JLabel();
@@ -136,7 +136,7 @@ public class SoundEffectDemo extends JFrame implements ActionListener{
             resultPanel.add(resultButton[i]);
         }
         
-        resultPanel.setBorder(BorderFactory.createEmptyBorder(30,16,10,16));
+        resultPanel.setBorder(BorderFactory.createEmptyBorder(10,16,10,16));
         
         //top panel = query + select panel + distance panel
         JPanel topPanel = new JPanel();
