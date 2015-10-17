@@ -18,8 +18,17 @@ public class SearchDemo {
     /**
      * Please replace the 'trainPath' with the specific path of train set in your PC.
      */
-    protected final static String trainPath = "E:/study/study2015sem1/CS2108/Assignment 2/data/input/";
-
+    protected final static String trainPath = "/Users/svarshney/Desktop/Semester 1/cs2108/Assignments/Assignment 2/data/input/train";
+    private double[] coefficients;
+    int choice = 0;
+    public SearchDemo(double a,double b,double c,double d, int num){
+		this.coefficients = new double[4];
+		this.coefficients[0] = a;
+		this.coefficients[1] = b;
+		this.coefficients[2] = c;
+		this.coefficients[3] = d;
+		choice = num;
+	}
 
     /***
      * Get the feature of train set via the specific feature extraction method, and write it into offline file for efficiency;
@@ -44,6 +53,7 @@ public class SearchDemo {
             for (int i = 0; i < trainList.length; i++) {
                 WaveIO waveIO = new WaveIO();
                 short[] signal = waveIO.readWave(trainList[i].getAbsolutePath());
+                System.out.println(trainList[i].getAbsolutePath());
 
                 /**
                  * Example of extracting feature via MagnitudeSpectrum, modify it by yourself.
@@ -112,10 +122,7 @@ public class SearchDemo {
      * such as CityBlock, Cosine and Euclidean by yourself.
      * @param query the selected query audio file;
      * @return the top 20 similar audio files;
-     */
-    
-    
-    
+     */  
     // need 4 more coefficient and 1 index 
     public ArrayList<String> resultList(String query){
         //HERE IS THE DISTANCE INDEX
@@ -151,33 +158,45 @@ public class SearchDemo {
         HashMap<String, double[]> trainFeatureListEN = readFeature("data/feature/allFeatureEN.txt");
         HashMap<String, double[]> trainFeatureListZC = readFeature("data/feature/allFeatureZC.txt");
         HashMap<String, double[]> trainFeatureListMF = readFeature("data/feature/allFeatureMF.txt");
-//        System.out.println(trainFeatureList.size() + "=====");
-        for (Map.Entry f: trainFeatureListMF.entrySet()){
-        	
-        	
-        	
-        	
-        	cosine.getDistance(mfMean, (double[]) f.getValue());
-        	//HERE YOU NEED TO ADD THE COEFFICIENTS CALCULATIONS
+        //System.out.println(trainFeatureList.size() + "=====");
+        index = choice;
+        for (Map.Entry f: trainFeatureListMS.entrySet()){
+        	//cosine.getDistance(mfMean, (double[]) f.getValue());
+        	double ans, ans1, ans2, ans3, ans4;
+        	String key = (String)f.getKey();
         	switch(index)
         	{
         		case 0://COSINE
-        		{
-        			simList.put((String)f.getKey(),cosine.getDistance(msFeature, (double[]) f.getValue()));
+        		{	
+        			ans1 = coefficients[0] * cosine.getDistance(msFeature, (double[]) f.getValue());
+        			ans2 = coefficients[1] * cosine.getDistance(enFeature, trainFeatureListEN.get(key));
+        			ans3 = coefficients[2] * cosine.getDistance(mfMean, trainFeatureListMF.get(key));
+        			ans4 = coefficients[3] * cosine.getDistance(zcFeature, trainFeatureListZC.get(key));
+        			ans = ans1 + ans2 + ans3 + ans4;
+        			simList.put(key, ans);
         			break;
         		}
         		case 1://CITY BLOCK
         		{
-        			simList.put((String)f.getKey(),cb.getDistance(msFeature, (double[]) f.getValue()));
+        			ans1 = coefficients[0] * cb.getDistance(msFeature, (double[]) f.getValue());
+        			ans2 = coefficients[1] * cb.getDistance(enFeature, trainFeatureListEN.get(key));
+        			ans3 = coefficients[2] * cb.getDistance(mfMean, trainFeatureListMF.get(key));
+        			ans4 = coefficients[3] * cb.getDistance(zcFeature, trainFeatureListZC.get(key));
+        			ans = ans1 + ans2 + ans3 + ans4;
+        			simList.put(key, ans);
         			break;
         		}
         		case 2://EUCLIDEAN
         		{
-        			simList.put((String)f.getKey(),eu.getDistance(msFeature, (double[]) f.getValue()));
+        			ans1 = coefficients[0] * eu.getDistance(msFeature, (double[]) f.getValue());
+        			ans2 = coefficients[1] * eu.getDistance(enFeature, trainFeatureListEN.get(key));
+        			ans3 = coefficients[2] * eu.getDistance(mfMean, trainFeatureListMF.get(key));
+        			ans4 = coefficients[3] * eu.getDistance(zcFeature, trainFeatureListZC.get(key));
+        			ans = ans1 + ans2 + ans3 + ans4;
+        			simList.put(key, ans);
         			break;
         		}
         	}
-            simList.put((String)f.getKey(), cosine.getDistance(msFeature, (double[]) f.getValue()));
         }
 
         SortHashMapByValue sortHM = new SortHashMapByValue(20);
@@ -226,11 +245,9 @@ public class SearchDemo {
         return fList;
     }
 
-    public static void main(String[] args){
+    /*public static void main(String[] args){
         SearchDemo searchDemo = new SearchDemo();
-        /**
-         * Example of searching, selecting 'bus2.wav' as query;
-         */
+        //Example of searching, selecting 'bus2.wav' as query;
         searchDemo.resultList("data/input/test/bus2.wav");
-    }
+    }*/
 }

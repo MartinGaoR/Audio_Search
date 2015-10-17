@@ -16,7 +16,7 @@ public class Euclidean {
         }
     	double sum = 0.0;
     	for(int i = 0;i<query1.length;i++){
-    		sum+=Math.pow((query1[i]-query2[2]), 2);
+    		sum+=Math.pow((query1[i]-query2[i]), 2);
     	}
     	
         return Math.sqrt(sum);
