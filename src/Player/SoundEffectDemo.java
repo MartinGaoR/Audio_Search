@@ -33,7 +33,7 @@ public class SoundEffectDemo extends JFrame implements ActionListener{
     /**
      * Please Replace the 'basePath' with specific path of train set of audio files in your PC.
      */
-    String basePath = "/Users/svarshney/Desktop/Semester 1/cs2108/Assignments/Assignment 2/data/input/train/";
+    String basePath = "E:\\study\\study2015sem1\\CS2108\\Assignment 2\\data\\input\\train\\";
 
 
     JButton[] resultButton = new JButton[resultSize];
