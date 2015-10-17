@@ -1,5 +1,6 @@
 package Player;
 import Search.SearchDemo;
+import Evaluation.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -24,6 +25,7 @@ public class SoundEffectDemo extends JFrame implements ActionListener{
     int flag[] = new int[4];
     double coff[] = new double[4];
     int choice = 0;
+    double precision, recall;
     /**
      * If need, please replace the 'querySet' with specific path of test set of audio files in your PC.
      */
@@ -209,6 +211,10 @@ public class SoundEffectDemo extends JFrame implements ActionListener{
         	
             SearchDemo searchDemo = new SearchDemo(coff[0], coff[1], coff[2], coff[3], choice);
             resultFiles = searchDemo.resultList(queryAudio.getAbsolutePath());
+            Precision p = new Precision();
+            precision = p.result (resultFiles, queryAudio.getName());
+            Recall r = new Recall();
+            recall = r.result (resultFiles, queryAudio.getName());
 
             for (int i = 0; i < resultFiles.size(); i ++){
                 resultLabels[i].setText(resultFiles.get(i));
