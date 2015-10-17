@@ -20,6 +20,7 @@ public class SoundEffectDemo extends JFrame implements ActionListener{
     JCheckBox check[] = new JCheckBox[4];
     JTextField box[] = new JTextField[4];
     JCheckBox distance[] = new JCheckBox[3];
+    JButton precisionButton, recallButton;
     File queryAudio = null;
     int resultSize = 20;
     int flag[] = new int[4];
@@ -138,7 +139,7 @@ public class SoundEffectDemo extends JFrame implements ActionListener{
             resultPanel.add(resultButton[i]);
         }
         
-        resultPanel.setBorder(BorderFactory.createEmptyBorder(10,16,10,16));
+        resultPanel.setBorder(BorderFactory.createEmptyBorder(5,16,5,16));
         
         //top panel = query + select panel + distance panel
         JPanel topPanel = new JPanel();
@@ -147,6 +148,16 @@ public class SoundEffectDemo extends JFrame implements ActionListener{
         topPanel.add(selectPanel);
         topPanel.add(distancePanel);
         
+        //bottom panel
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new GridLayout(0, 2, 10, 10));
+        //bottomPanel.setBounds(30, 60, 800, 30);
+        //bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
+        precisionButton = new JButton();
+        recallButton = new JButton();
+        bottomPanel.add(precisionButton);
+        bottomPanel.add(recallButton);
+        
         //content pane
         contentPane = (JPanel)this.getContentPane();
         setSize(800,900);
@@ -154,6 +165,7 @@ public class SoundEffectDemo extends JFrame implements ActionListener{
 
         contentPane.add(topPanel, BorderLayout.PAGE_START);
         contentPane.add(resultPanel, BorderLayout.CENTER);
+        contentPane.add(bottomPanel, BorderLayout.PAGE_END);
 
         contentPane.setVisible(true);
         setVisible(true);
@@ -221,6 +233,9 @@ public class SoundEffectDemo extends JFrame implements ActionListener{
                 resultButton[i].setText(resultFiles.get(i));
                 resultButton[i].setVisible(true);
             }
+            
+            precisionButton.setText("Precision: " + precision );
+            recallButton.setText("Recall: " + recall );
 
         }else if (e.getSource() == queryButton){
             new SoundEffect(queryAudio.getAbsolutePath()).play();
