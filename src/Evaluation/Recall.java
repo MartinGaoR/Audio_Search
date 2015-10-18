@@ -17,7 +17,7 @@ public class Recall {
 				count++;
 		}
 		ans = count/k;
-		System.out.println(ans);
+		//System.out.println(ans);
 		return ans;
 	}
 }
