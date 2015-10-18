@@ -31,7 +31,7 @@ public class Cosine {
         }else {
             similarity = 0.0;
         }
-
-        return similarity;
+        System.out.println(similarity);
+        return 1-similarity;
     }
 }

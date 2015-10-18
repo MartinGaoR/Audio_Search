@@ -18,7 +18,7 @@ public class SearchDemo {
     /**
      * Please replace the 'trainPath' with the specific path of train set in your PC.
      */
-    protected final static String trainPath = "/Users/svarshney/Desktop/Semester 1/cs2108/Assignments/Assignment 2/data/input/train";
+    protected final static String trainPath = "E:\\study\\study2015sem1\\CS2108\\Assignment 2\\data\\input\\train";
     private double[] coefficients;
     int choice = 0;
     public SearchDemo(double a,double b,double c,double d, int num){
@@ -137,6 +137,7 @@ public class SearchDemo {
         MFCC mf = new MFCC();
         ZeroCrossing zc = new ZeroCrossing();
         double[] msFeature = ms.getFeature(inputSignal);
+        System.out.println(msFeature.length);
         double[] enFeature = en.getFeature(inputSignal);
         mf.process(inputSignal);
         double[] mfMean = mf.getMeanFeature();
@@ -164,34 +165,35 @@ public class SearchDemo {
         	//cosine.getDistance(mfMean, (double[]) f.getValue());
         	double ans, ans1, ans2, ans3, ans4;
         	String key = (String)f.getKey();
+        	System.out.println(((double[])f.getValue()).length);
         	switch(index)
         	{
         		case 0://COSINE
         		{	
-        			ans1 = coefficients[0] * cosine.getDistance(msFeature, (double[]) f.getValue());
-        			ans2 = coefficients[1] * cosine.getDistance(enFeature, trainFeatureListEN.get(key));
-        			ans3 = coefficients[2] * cosine.getDistance(mfMean, trainFeatureListMF.get(key));
-        			ans4 = coefficients[3] * cosine.getDistance(zcFeature, trainFeatureListZC.get(key));
+        			ans1 = coefficients[0]!=0?coefficients[0] * cosine.getDistance(msFeature, (double[]) f.getValue()):0;
+        			ans2 = coefficients[1]!=0?coefficients[1] * cosine.getDistance(enFeature, trainFeatureListEN.get(key)):0;
+        			ans3 = coefficients[2]!=0?coefficients[2] * cosine.getDistance(mfMean, trainFeatureListMF.get(key)):0;
+        			ans4 = coefficients[3]!=0?coefficients[3] * cosine.getDistance(zcFeature, trainFeatureListZC.get(key)):0;
         			ans = ans1 + ans2 + ans3 + ans4;
         			simList.put(key, ans);
         			break;
         		}
         		case 1://CITY BLOCK
         		{
-        			ans1 = coefficients[0] * cb.getDistance(msFeature, (double[]) f.getValue());
-        			ans2 = coefficients[1] * cb.getDistance(enFeature, trainFeatureListEN.get(key));
-        			ans3 = coefficients[2] * cb.getDistance(mfMean, trainFeatureListMF.get(key));
-        			ans4 = coefficients[3] * cb.getDistance(zcFeature, trainFeatureListZC.get(key));
+        			ans1 = coefficients[0]!=0?coefficients[0] * cb.getDistance(msFeature, (double[]) f.getValue()):0;
+        			ans2 = coefficients[1]!=0?coefficients[1] * cb.getDistance(enFeature, trainFeatureListEN.get(key)):0;
+        			ans3 = coefficients[2]!=0?coefficients[2] * cb.getDistance(mfMean, trainFeatureListMF.get(key)):0;
+        			ans4 = coefficients[3]!=0?coefficients[3] * cb.getDistance(zcFeature, trainFeatureListZC.get(key)):0;
         			ans = ans1 + ans2 + ans3 + ans4;
         			simList.put(key, ans);
         			break;
         		}
         		case 2://EUCLIDEAN
         		{
-        			ans1 = coefficients[0] * eu.getDistance(msFeature, (double[]) f.getValue());
-        			ans2 = coefficients[1] * eu.getDistance(enFeature, trainFeatureListEN.get(key));
-        			ans3 = coefficients[2] * eu.getDistance(mfMean, trainFeatureListMF.get(key));
-        			ans4 = coefficients[3] * eu.getDistance(zcFeature, trainFeatureListZC.get(key));
+        			ans1 = coefficients[0]!=0?coefficients[0] * eu.getDistance(msFeature, (double[]) f.getValue()):0;
+        			ans2 = coefficients[1]!=0?coefficients[1] * eu.getDistance(enFeature, trainFeatureListEN.get(key)):0;
+        			ans3 = coefficients[2]!=0?coefficients[2] * eu.getDistance(mfMean, trainFeatureListMF.get(key)):0;
+        			ans4 = coefficients[3]!=0?coefficients[3] * eu.getDistance(zcFeature, trainFeatureListZC.get(key)):0;
         			ans = ans1 + ans2 + ans3 + ans4;
         			simList.put(key, ans);
         			break;
@@ -245,9 +247,10 @@ public class SearchDemo {
         return fList;
     }
 
-    /*public static void main(String[] args){
-        SearchDemo searchDemo = new SearchDemo();
+   /* public static void main(String[] args){
+        SearchDemo searchDemo = new SearchDemo(0,0,0,0,1);
+        searchDemo.trainFeatureList();
         //Example of searching, selecting 'bus2.wav' as query;
-        searchDemo.resultList("data/input/test/bus2.wav");
+        //searchDemo.resultList("data/input/test/bus2.wav");
     }*/
 }
